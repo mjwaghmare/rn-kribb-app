@@ -60,7 +60,7 @@ export default function SignUp() {
                 console.log(JSON.stringify(error.message, null, 2));
                 return;
             }
-            // navigate
+            // navigate in
             if (signUp.status === 'complete') {
                 await signUp.finalize({
                     navigate: ({decorateUrl}) => {
