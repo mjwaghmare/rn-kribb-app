@@ -20,24 +20,31 @@ export default function HomeScreen() {
 
 
     const fetchProperties = async () => {
-        setLoading(true);
+        try {
+            setLoading(true);
 
-        // fetching featured properties
-        const {data: featuredData} = await supabase
-            .from('properties')
-            .select("*")
-            .eq('is_featured', true)
-            .order('created_at', {ascending: false});
+            // fetching featured properties
+            const {data: featuredData} = await supabase
+                .from('properties')
+                .select("*")
+                .eq('is_featured', true)
+                .order('created_at', {ascending: false});
 
-        // fetching recommended properties
-        const {data: recommendedData} = await supabase.from('properties')
-            .select("*")
-            .eq('is_featured', false)
-            .order('created_at', {ascending: false});
+            // fetching recommended properties
+            const {data: recommendedData} = await supabase.from('properties')
+                .select("*")
+                .eq('is_featured', false)
+                .order('created_at', {ascending: false});
 
-        setFeatured(featuredData ?? []);
-        setRecommended(recommendedData ?? []);
-        setLoading(false);
+            setFeatured(featuredData ?? []);
+            setRecommended(recommendedData ?? []);
+        } catch (error) {
+            console.error('Error fetching properties:', error);
+            setFeatured([]);
+            setRecommended([]);
+        } finally {
+            setLoading(false);
+        }
     }
 
     // fetching properties

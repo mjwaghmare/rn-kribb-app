@@ -1,11 +1,16 @@
+import React from "react";
 import {useUserStore} from "@/store/userStore";
 import {NativeTabs, Icon, Label} from "expo-router/unstable-native-tabs";
+
+function Layout({children}: { children: React.ReactNode }) {
+    return <NativeTabs>{children}</NativeTabs>;
+}
 
 export default function TabsLayout() {
     const isAdmin = useUserStore((state) => state.isAdmin);
 
     return (
-        <NativeTabs>
+        <Layout>
             <NativeTabs.Trigger name="index">
                 <Icon sf="house.fill"/>
                 <Label>Home</Label>
@@ -32,6 +37,6 @@ export default function TabsLayout() {
                 <Icon sf="person.fill"/>
                 <Label>Profile</Label>
             </NativeTabs.Trigger>
-        </NativeTabs>
+        </Layout>
     );
 }
