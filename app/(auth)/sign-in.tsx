@@ -1,6 +1,6 @@
-import { useSignIn } from "@clerk/expo";
-import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import {useSignIn} from "@clerk/expo";
+import {Link, useRouter} from "expo-router";
+import {useState} from "react";
 import {
     ActivityIndicator,
     Image,
@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 export default function SignInScreen() {
-    const { signIn, errors, fetchStatus } = useSignIn();
+    const {signIn, errors, fetchStatus} = useSignIn();
     const router = useRouter();
 
     const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export default function SignInScreen() {
     const [code, setCode] = useState("");
 
     const onSignInPress = async () => {
-        const { error } = await signIn.password({
+        const {error} = await signIn.password({
             emailAddress: email,
             password,
         });
@@ -30,7 +30,7 @@ export default function SignInScreen() {
 
         if (signIn.status === "complete") {
             await signIn.finalize({
-                navigate: ({ session, decorateUrl }) => {
+                navigate: ({session, decorateUrl}) => {
                     if (session?.currentTask) {
                         console.log(session?.currentTask);
                         return;
@@ -54,11 +54,11 @@ export default function SignInScreen() {
     };
 
     const onVerifyPress = async () => {
-        await signIn.mfa.verifyEmailCode({ code });
+        await signIn.mfa.verifyEmailCode({code});
 
         if (signIn.status === "complete") {
             await signIn.finalize({
-                navigate: ({ session, decorateUrl }) => {
+                navigate: ({session, decorateUrl}) => {
                     if (session?.currentTask) {
                         console.log(session?.currentTask);
                         return;
@@ -106,7 +106,7 @@ export default function SignInScreen() {
                     className="w-full bg-blue-600 py-4 rounded-xl items-center mb-4"
                 >
                     {isLoading ? (
-                        <ActivityIndicator color="white" />
+                        <ActivityIndicator color="white"/>
                     ) : (
                         <Text className="text-white font-bold text-base">Verify</Text>
                     )}
@@ -128,7 +128,7 @@ export default function SignInScreen() {
 
     return (
         <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{flexGrow: 1}}
             className="bg-white"
             keyboardShouldPersistTaps="handled"
         >
@@ -178,7 +178,7 @@ export default function SignInScreen() {
                     className="w-full bg-blue-600 py-4 rounded-xl items-center mb-4"
                 >
                     {isLoading ? (
-                        <ActivityIndicator color="white" />
+                        <ActivityIndicator color="white"/>
                     ) : (
                         <Text className="text-white font-bold text-base">Sign In</Text>
                     )}

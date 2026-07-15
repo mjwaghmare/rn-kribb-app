@@ -1,6 +1,8 @@
+import {useUserStore} from "@/store/userStore";
 import {NativeTabs, Icon, Label} from "expo-router/unstable-native-tabs";
 
 export default function TabsLayout() {
+    const isAdmin = useUserStore((state) => state.isAdmin);
 
     return (
         <NativeTabs>
@@ -14,12 +16,12 @@ export default function TabsLayout() {
                 <Label>Search</Label>
             </NativeTabs.Trigger>
 
-            {/*{isAdmin && (*/}
-            {/*    <NativeTabs.Trigger name="create">*/}
-            {/*        <Icon sf="plus.circle.fill" />*/}
-            {/*        <Label>Add Property</Label>*/}
-            {/*    </NativeTabs.Trigger>*/}
-            {/*)}*/}
+            {isAdmin && (
+                <NativeTabs.Trigger name="create">
+                    <Icon sf="plus.circle.fill"/>
+                    <Label>Add Property</Label>
+                </NativeTabs.Trigger>
+            )}
 
             <NativeTabs.Trigger name="saved">
                 <Icon sf="heart.fill"/>
