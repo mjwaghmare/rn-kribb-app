@@ -21,7 +21,7 @@ export default function TabsLayout() {
                 <Label>Search</Label>
             </NativeTabs.Trigger>
 
-            {isAdmin && (
+            {true && (
                 <NativeTabs.Trigger name="create">
                     <Icon sf="plus.circle.fill"/>
                     <Label>Add Property</Label>
