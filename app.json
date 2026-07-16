@@ -4,14 +4,18 @@
     "slug": "kribb",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/kribb.png",
+    "icon": "./assets/images/kribb-icon.png",
     "scheme": "kribb",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mwstudio.kribb",
-      "appleTeamId": "BA6Y63VR6W"
+      "appleTeamId": "BA6Y63VR6W",
+      "icon": {
+        "light": "./assets/images/kribb-icon.png",
+        "dark": "./assets/images/kribb-icon.png"
+      }
     },
     "android": {
       "package": "com.mwstudio.kribb",
