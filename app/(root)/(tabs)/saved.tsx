@@ -3,7 +3,7 @@ import React, {useCallback, useState} from 'react'
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useSupabase} from "@/hooks/useSupabase";
 import {useAuth} from "@clerk/expo";
-import {useFocusEffect, useRouter} from "expo-router";
+import {useFocusEffect} from "expo-router";
 import {Property} from "@/types";
 import PropertyCard from "@/components/PropertyCard";
 import {Ionicons} from "@expo/vector-icons";
@@ -18,7 +18,6 @@ export default function SavedScreen() {
 
     const {userId} = useAuth();
     const authSupabase = useSupabase();
-    const router = useRouter();
 
     //states
     const [saved, setSaved] = useState<SavedProperty[]>([]);
