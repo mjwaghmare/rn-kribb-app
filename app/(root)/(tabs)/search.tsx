@@ -1,26 +1,21 @@
-import {
-    View,
-    Text,
-    TextInput,
-    FlatList,
-    TouchableOpacity,
-    ActivityIndicator,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { Property } from "@/types";
-import { useFilterStore } from "@/store/filterStore";
-import { formatPrice } from "@/lib/utils";
+import {ActivityIndicator, FlatList, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Ionicons} from "@expo/vector-icons";
+import {useEffect, useState} from "react";
+import {supabase} from "@/lib/supabase";
+import {Property} from "@/types";
+import {useFilterStore} from "@/store/filterStore";
+import {formatPrice} from "@/lib/utils";
 import PropertyCard from "@/components/PropertyCard";
 import FilterBottomSheet from "@/components/FilterBottomSheet";
-import { useLocalSearchParams } from "expo-router";
+import {useLocalSearchParams} from "expo-router";
+import {useThemeColors} from "@/hooks/useTheme";
 
 export default function SearchScreen() {
     const [results, setResults] = useState<Property[]>([]);
     const [loading, setLoading] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
+    const colors = useThemeColors();
 
     const { openFilters } = useLocalSearchParams<{ openFilters?: string }>();
 
@@ -86,18 +81,19 @@ export default function SearchScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
+        <SafeAreaView style={{backgroundColor: colors.background}} className="flex-1">
             {/* Header */}
             <View className="px-5 pt-4 pb-3">
-                <Text className="text-2xl font-bold text-gray-900 mb-4">
+                <Text className="text-2xl font-bold mb-4" style={{color: colors.text}}>
                     Find Property
                 </Text>
 
                 {/* Search Bar + Filter Button */}
                 <View className="flex-row items-center gap-3">
                     <View
-                        className="flex-1 flex-row items-center bg-white rounded-2xl px-4 gap-3"
+                        className="flex-1 flex-row items-center rounded-2xl px-4 gap-3"
                         style={{
+                            backgroundColor: colors.card,
                             shadowColor: "#000",
                             shadowOffset: { width: 0, height: 1 },
                             shadowOpacity: 0.06,
@@ -105,18 +101,19 @@ export default function SearchScreen() {
                             elevation: 2,
                         }}
                     >
-                        <Ionicons name="search-outline" size={18} color="#9CA3AF" />
+                        <Ionicons name="search-outline" size={18} color={colors.textSecondary}/>
                         <TextInput
-                            className="flex-1 py-3 text-gray-800"
+                            className="flex-1 py-3"
+                            style={{color: colors.text}}
                             placeholder="Search by title or city..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={search}
                             onChangeText={setSearch}
                             autoCapitalize="none"
                         />
                         {search.length > 0 && (
                             <TouchableOpacity onPress={() => setSearch("")}>
-                                <Ionicons name="close-circle" size={18} color="#9CA3AF" />
+                                <Ionicons name="close-circle" size={18} color={colors.textSecondary}/>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -124,10 +121,9 @@ export default function SearchScreen() {
                     {/* Filter Button */}
                     <TouchableOpacity
                         onPress={() => setShowFilters(true)}
-                        className={`w-12 h-12 rounded-2xl items-center justify-center ${
-                            activeFilterCount > 0 ? "bg-blue-600" : "bg-white"
-                        }`}
+                        className={`w-12 h-12 rounded-2xl items-center justify-center`}
                         style={{
+                            backgroundColor: activeFilterCount > 0 ? colors.primary : colors.card,
                             shadowColor: "#000",
                             shadowOffset: { width: 0, height: 1 },
                             shadowOpacity: 0.06,
@@ -138,10 +134,11 @@ export default function SearchScreen() {
                         <Ionicons
                             name="options-outline"
                             size={20}
-                            color={activeFilterCount > 0 ? "#fff" : "#374151"}
+                            color={activeFilterCount > 0 ? "#fff" : colors.text}
                         />
                         {activeFilterCount > 0 && (
-                            <View className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full items-center justify-center">
+                            <View className="absolute -top-1 -right-1 w-4 h-4 rounded-full items-center justify-center"
+                                  style={{backgroundColor: colors.error}}>
                                 <Text className="text-white text-[9px] font-bold">
                                     {activeFilterCount}
                                 </Text>
@@ -207,23 +204,23 @@ export default function SearchScreen() {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => <PropertyCard property={item} />}
                 ListHeaderComponent={
-                    <Text className="text-sm text-gray-400 mb-4">
+                    <Text className="text-sm mb-4" style={{color: colors.textSecondary}}>
                         {loading ? "Searching..." : `${results.length} properties found`}
                     </Text>
                 }
                 ListEmptyComponent={
                     !loading ? (
                         <View className="items-center py-20">
-                            <Ionicons name="search-outline" size={48} color="#D1D5DB" />
-                            <Text className="text-gray-400 mt-4 text-base">
+                            <Ionicons name="search-outline" size={48} color={colors.border}/>
+                            <Text className="mt-4 text-base" style={{color: colors.textSecondary}}>
                                 No properties found
                             </Text>
-                            <Text className="text-gray-300 text-sm mt-1">
+                            <Text className="text-sm mt-1" style={{color: colors.textSecondary}}>
                                 Try a different search or adjust filters
                             </Text>
                         </View>
                     ) : (
-                        <ActivityIndicator size="large" color="#2563EB" className="py-20" />
+                        <ActivityIndicator size="large" color={colors.primary} className="py-20"/>
                     )
                 }
             />

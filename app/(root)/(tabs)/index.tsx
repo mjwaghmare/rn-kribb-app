@@ -1,4 +1,4 @@
-import {View, Text, FlatList, Image, Pressable, ActivityIndicator} from 'react-native'
+import {ActivityIndicator, FlatList, Image, Pressable, Text, View} from 'react-native'
 import React, {useCallback, useState} from 'react'
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useUser} from "@clerk/expo";
@@ -8,11 +8,13 @@ import {supabase} from "@/lib/supabase";
 import {Ionicons} from "@expo/vector-icons";
 import FeatureCard from "@/components/FeatureCard";
 import PropertyCard from "@/components/PropertyCard";
+import {useThemeColors} from "@/hooks/useTheme";
 
 export default function HomeScreen() {
 
     const {user} = useUser();
     const router = useRouter();
+    const colors = useThemeColors();
 
     const [featured, setFeatured] = useState<Property[]>([]);
     const [recommended, setRecommended] = useState<Property[]>([]);
@@ -56,7 +58,7 @@ export default function HomeScreen() {
 
 
     return (
-        <SafeAreaView className='flex-1 bg-gray-50'>
+        <SafeAreaView style={{backgroundColor: colors.background}} className='flex-1'>
             <FlatList
                 data={recommended}
                 keyExtractor={(item) => item.id}
@@ -72,16 +74,18 @@ export default function HomeScreen() {
                                 source={require('../../../assets/images/kribb.png')}
                             />
                             <View className='items-end'>
-                                <Text>Hello 👋🏻</Text>
+                                <Text style={{color: colors.text}}>Hello 👋🏻</Text>
                                 <Text
-                                    className='text-gray-900 text-base font-bold'
+                                    className='text-base font-bold'
+                                    style={{color: colors.text}}
                                 >{user?.firstName ?? 'User'}</Text>
                             </View>
                         </View>
                         {/*search bar*/}
                         <Pressable onPress={() => router.push('/(root)/(tabs)/search')}
-                                   className='mx-5 mb-6 flex-row items-center bg-white rounded-2xl px-4 py-3 gap-3'
+                                   className='mx-5 mb-6 flex-row items-center rounded-2xl px-4 py-3 gap-3'
                                    style={{
+                                       backgroundColor: colors.card,
                                        shadowColor: '#000',
                                        shadowOffset: {width: 0, height: 1},
                                        shadowOpacity: 0.06,
@@ -89,21 +93,23 @@ export default function HomeScreen() {
                                        elevation: 2
                                    }}
                         >
-                            <Ionicons name='search-outline' size={18} color='#9CA3AF'/>
-                            <Text className='text-gray-400 text-sm flex-1'>Search properties, cities</Text>
+                            <Ionicons name='search-outline' size={18} color={colors.textSecondary}/>
+                            <Text className='text-sm flex-1' style={{color: colors.textSecondary}}>Search properties,
+                                cities</Text>
                             <Pressable onPress={() => router.push('/(root)/(tabs)/search?openFilters=true')}
-                                       className='w-8 h-8 bg-blue-600 rounded-xl items-center justify-center'
+                                       className='w-8 h-8 rounded-xl items-center justify-center'
+                                       style={{backgroundColor: colors.primary}}
                             >
                                 <Ionicons name='options-outline' size={15} color='#fff'/>
                             </Pressable>
                         </Pressable>
                         {/*featured*/}
                         <View className='mb-6'>
-                            <Text className='text-gray-900 text-  lg font-bold px-5 mb-4'>
+                            <Text className='text-lg font-bold px-5 mb-4' style={{color: colors.text}}>
                                 Featured
                             </Text>
                             {loading ? (
-                                <ActivityIndicator size="small" color='#2563EB' className='py-10'
+                                <ActivityIndicator size="small" color={colors.primary} className='py-10'
                                 />
                             ) : <FlatList
                                 horizontal
@@ -116,7 +122,7 @@ export default function HomeScreen() {
                         </View>
 
                         {/*recommended header*/}
-                        <Text className='text-gray-900 text-lg font-bold px-5 mb-4'>
+                        <Text className='text-lg font-bold px-5 mb-4' style={{color: colors.text}}>
                             Recommended
                         </Text>
                     </View>
@@ -129,7 +135,7 @@ export default function HomeScreen() {
                 ListFooterComponent={
                     !loading && recommended.length == 0 ? (
                         <View className='items-center py-10'>
-                            <Text className='text-gray-400'>No properties found</Text>
+                            <Text style={{color: colors.textSecondary}}>No properties found</Text>
                         </View>
                     ) : null
                 }

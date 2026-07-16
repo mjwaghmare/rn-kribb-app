@@ -17,6 +17,7 @@ import {
     View,
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {useThemeColors} from "@/hooks/useTheme";
 
 const TYPES = ["apartment", "house", "villa", "studio"] as const;
 type PropertyType = (typeof TYPES)[number];
@@ -24,9 +25,6 @@ type PropertyType = (typeof TYPES)[number];
 const MIN_PRICE = 1;
 const MAX_PRICE = 999_999_999;
 
-const inputClass =
-    "bg-white border border-gray-200 rounded-2xl px-4 py-3 text-gray-800";
-const labelClass = "text-sm font-semibold text-gray-700 mb-1.5";
 const sectionClass = "mb-5";
 
 interface FormState {
@@ -66,6 +64,7 @@ const INITIAL_FORM: FormState = {
 export default function CreatePropertyScreen() {
     const router = useRouter();
     const authSupabase = useSupabase();
+    const colors = useThemeColors();
 
     const [form, setForm] = useState<FormState>(INITIAL_FORM);
 
@@ -241,28 +240,32 @@ export default function CreatePropertyScreen() {
         label: string;
         value: number;
         onChange: (v: number) => void;
-    }) => (
+    }) => {
+        const colors = useThemeColors();
+        return (
         <View className="flex-1">
-            <Text className={labelClass}>{label}</Text>
-            <View className="flex-row items-center bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>{label}</Text>
+            <View className="flex-row items-center rounded-2xl overflow-hidden"
+                  style={{backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1}}>
                 <TouchableOpacity
                     onPress={() => onChange(Math.max(1, value - 1))}
                     className="w-11 h-11 items-center justify-center"
                 >
-                    <Ionicons name="remove" size={18} color="#374151"/>
+                    <Ionicons name="remove" size={18} color={colors.text}/>
                 </TouchableOpacity>
-                <Text className="flex-1 text-center text-gray-800 font-bold text-base">
+                <Text className="flex-1 text-center font-bold text-base" style={{color: colors.text}}>
                     {value}
                 </Text>
                 <TouchableOpacity
                     onPress={() => onChange(value + 1)}
                     className="w-11 h-11 items-center justify-center"
                 >
-                    <Ionicons name="add" size={18} color="#374151"/>
+                    <Ionicons name="add" size={18} color={colors.text}/>
                 </TouchableOpacity>
             </View>
         </View>
-    );
+        );
+    };
 
     const Toggle = ({
                         label,
@@ -274,44 +277,51 @@ export default function CreatePropertyScreen() {
         value: boolean;
         onChange: (v: boolean) => void;
         description?: string;
-    }) => (
+    }) => {
+        const colors = useThemeColors();
+        return (
         <TouchableOpacity
             onPress={() => onChange(!value)}
-            className={`flex-row items-center justify-between p-4 rounded-2xl border ${
-                value ? "bg-blue-50 border-blue-200" : "bg-white border-gray-200"
-            }`}
+            className="flex-row items-center justify-between p-4 rounded-2xl border"
+            style={{
+                backgroundColor: value ? colors.card : colors.card,
+                borderColor: value ? colors.primary : colors.border,
+                borderWidth: 1
+            }}
         >
             <View className="flex-1 mr-3">
                 <Text
-                    className={`font-semibold ${
-                        value ? "text-blue-700" : "text-gray-700"
-                    }`}
+                    className="font-semibold"
+                    style={{color: value ? colors.primary : colors.text}}
                 >
                     {label}
                 </Text>
                 {description && (
-                    <Text className="text-xs text-gray-400 mt-0.5">{description}</Text>
+                    <Text className="text-xs mt-0.5" style={{color: colors.textSecondary}}>{description}</Text>
                 )}
             </View>
             <View
-                className={`w-6 h-6 rounded-full border-2 items-center justify-center ${
-                    value ? "bg-blue-600 border-blue-600" : "border-gray-300"
-                }`}
+                className="w-6 h-6 rounded-full border-2 items-center justify-center"
+                style={{
+                    borderColor: value ? colors.primary : colors.border,
+                    backgroundColor: value ? colors.primary : 'transparent'
+                }}
             >
                 {value && <Ionicons name="checkmark" size={14} color="white"/>}
             </View>
         </TouchableOpacity>
-    );
+        );
+    };
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50">
+        <SafeAreaView style={{backgroundColor: colors.background}} className="flex-1">
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 className="flex-1"
             >
                 {/* Header */}
                 <View className="flex-row items-center px-5 pt-4 pb-3">
-                    <Text className="text-2xl font-bold text-gray-900 flex-1">
+                    <Text className="text-2xl font-bold flex-1" style={{color: colors.text}}>
                         Add Property
                     </Text>
                 </View>
@@ -323,9 +333,9 @@ export default function CreatePropertyScreen() {
                 >
                     {/* Images */}
                     <View className={sectionClass}>
-                        <Text className={labelClass}>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>
                             Photos{" "}
-                            <Text className="text-gray-400 font-normal">(up to 6)</Text>
+                            <Text className="font-normal" style={{color: colors.textSecondary}}>(up to 6)</Text>
                         </Text>
 
                         <View className="flex-row flex-wrap gap-3">
@@ -356,18 +366,23 @@ export default function CreatePropertyScreen() {
                                 <TouchableOpacity
                                     onPress={handlePickImages}
                                     disabled={uploadingImages}
-                                    className="w-24 h-24 rounded-2xl bg-white border-2 border-dashed border-gray-300 items-center justify-center"
+                                    className="w-24 h-24 rounded-2xl border-2 border-dashed items-center justify-center"
+                                    style={{
+                                        backgroundColor: colors.card,
+                                        borderColor: colors.border
+                                    }}
                                 >
                                     {uploadingImages ? (
-                                        <ActivityIndicator size="small" color="#2563EB"/>
+                                        <ActivityIndicator size="small" color={colors.primary}/>
                                     ) : (
                                         <>
                                             <Ionicons
                                                 name="camera-outline"
                                                 size={22}
-                                                color="#9CA3AF"
+                                                color={colors.textSecondary}
                                             />
-                                            <Text className="text-gray-400 text-xs mt-1">Add</Text>
+                                            <Text className="text-xs mt-1"
+                                                  style={{color: colors.textSecondary}}>Add</Text>
                                         </>
                                     )}
                                 </TouchableOpacity>
@@ -377,22 +392,34 @@ export default function CreatePropertyScreen() {
 
                     {/* Basic Info */}
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Title</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Title</Text>
                         <TextInput
-                            className={inputClass}
+                            className="rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="e.g. Modern 3BHK in Bandra"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.title}
                             onChangeText={(v) => updateForm({title: v})}
                         />
                     </View>
 
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Description</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Description</Text>
                         <TextInput
-                            className={`${inputClass} h-24`}
+                            className="h-24 rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="Describe the property..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.description}
                             onChangeText={(v) => updateForm({description: v})}
                             multiline
@@ -402,38 +429,44 @@ export default function CreatePropertyScreen() {
 
                     {/* Price */}
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Price (₹)</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Price (₹)</Text>
                         <TextInput
-                            className={inputClass}
+                            className="rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="e.g. 5000000"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.price}
                             onChangeText={(v) => updateForm({price: v})}
                             keyboardType="numeric"
                         />
-                        <Text className="text-xs text-gray-400 mt-1.5 ml-1">
+                        <Text className="text-xs mt-1.5 ml-1" style={{color: colors.textSecondary}}>
                             Valid range: ₹1 – ₹{MAX_PRICE.toLocaleString("en-IN")}
                         </Text>
                     </View>
 
                     {/* Property Type */}
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Property Type</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Property Type</Text>
                         <View className="flex-row flex-wrap gap-2">
                             {TYPES.map((t) => (
                                 <TouchableOpacity
                                     key={t}
                                     onPress={() => updateForm({type: t})}
-                                    className={`px-4 py-2 rounded-full border ${
-                                        form.type === t
-                                            ? "bg-blue-600 border-blue-600"
-                                            : "bg-white border-gray-200"
-                                    }`}
+                                    className="px-4 py-2 rounded-full border"
+                                    style={{
+                                        backgroundColor: form.type === t ? colors.primary : colors.card,
+                                        borderColor: form.type === t ? colors.primary : colors.border,
+                                        borderWidth: 1
+                                    }}
                                 >
                                     <Text
-                                        className={`text-sm font-semibold capitalize ${
-                                            form.type === t ? "text-white" : "text-gray-600"
-                                        }`}
+                                        className="text-sm font-semibold capitalize"
+                                        style={{color: form.type === t ? "white" : colors.text}}
                                     >
                                         {t}
                                     </Text>
@@ -457,11 +490,17 @@ export default function CreatePropertyScreen() {
                     </View>
 
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Area (sq ft)</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Area (sq ft)</Text>
                         <TextInput
-                            className={inputClass}
+                            className="rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="e.g. 1200"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.areaSqft}
                             onChangeText={(v) => updateForm({areaSqft: v})}
                             keyboardType="numeric"
@@ -470,22 +509,34 @@ export default function CreatePropertyScreen() {
 
                     {/* Location */}
                     <View className={sectionClass}>
-                        <Text className={labelClass}>Address</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>Address</Text>
                         <TextInput
-                            className={inputClass}
+                            className="rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="Street address"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.address}
                             onChangeText={(v) => updateForm({address: v})}
                         />
                     </View>
 
                     <View className={sectionClass}>
-                        <Text className={labelClass}>City</Text>
+                        <Text className="text-sm font-semibold mb-1.5" style={{color: colors.text}}>City</Text>
                         <TextInput
-                            className={inputClass}
+                            className="rounded-2xl px-4 py-3"
+                            style={{
+                                backgroundColor: colors.card,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                color: colors.text
+                            }}
                             placeholder="e.g. Mumbai"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={colors.textSecondary}
                             value={form.city}
                             onChangeText={(v) => updateForm({city: v})}
                         />
@@ -494,18 +545,20 @@ export default function CreatePropertyScreen() {
                     {/* Coordinates */}
                     <View className={sectionClass}>
                         <View className="flex-row items-center justify-between mb-1.5">
-                            <Text className={labelClass}>Coordinates</Text>
+                            <Text className="text-sm font-semibold mb-1.5"
+                                  style={{color: colors.text}}>Coordinates</Text>
                             <TouchableOpacity
                                 onPress={handleDetectLocation}
                                 disabled={detectingLocation}
-                                className="flex-row items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full"
+                                className="flex-row items-center gap-1 px-3 py-1.5 rounded-full"
+                                style={{backgroundColor: colors.card}}
                             >
                                 {detectingLocation ? (
-                                    <ActivityIndicator size="small" color="#2563EB"/>
+                                    <ActivityIndicator size="small" color={colors.primary}/>
                                 ) : (
-                                    <Ionicons name="locate-outline" size={13} color="#2563EB"/>
+                                    <Ionicons name="locate-outline" size={13} color={colors.primary}/>
                                 )}
-                                <Text className="text-blue-600 text-xs font-semibold">
+                                <Text className="text-xs font-semibold" style={{color: colors.primary}}>
                                     {detectingLocation ? "Detecting..." : "Detect Location"}
                                 </Text>
                             </TouchableOpacity>
@@ -514,9 +567,15 @@ export default function CreatePropertyScreen() {
                         <View className="flex-row gap-3">
                             <View className="flex-1">
                                 <TextInput
-                                    className={inputClass}
+                                    className="rounded-2xl px-4 py-3"
+                                    style={{
+                                        backgroundColor: colors.card,
+                                        borderColor: colors.border,
+                                        borderWidth: 1,
+                                        color: colors.text
+                                    }}
                                     placeholder="Latitude"
-                                    placeholderTextColor="#9CA3AF"
+                                    placeholderTextColor={colors.textSecondary}
                                     value={form.latitude}
                                     onChangeText={(v) => updateForm({latitude: v})}
                                     keyboardType="numeric"
@@ -524,9 +583,15 @@ export default function CreatePropertyScreen() {
                             </View>
                             <View className="flex-1">
                                 <TextInput
-                                    className={inputClass}
+                                    className="rounded-2xl px-4 py-3"
+                                    style={{
+                                        backgroundColor: colors.card,
+                                        borderColor: colors.border,
+                                        borderWidth: 1,
+                                        color: colors.text
+                                    }}
                                     placeholder="Longitude"
-                                    placeholderTextColor="#9CA3AF"
+                                    placeholderTextColor={colors.textSecondary}
                                     value={form.longitude}
                                     onChangeText={(v) => updateForm({longitude: v})}
                                     keyboardType="numeric"
@@ -549,9 +614,10 @@ export default function CreatePropertyScreen() {
                     <TouchableOpacity
                         onPress={handleSubmit}
                         disabled={submitting || uploadingImages}
-                        className="bg-blue-600 rounded-2xl py-4 items-center"
+                        className="rounded-2xl py-4 items-center"
                         style={{
-                            shadowColor: "#2563EB",
+                            backgroundColor: colors.primary,
+                            shadowColor: colors.primary,
                             shadowOffset: {width: 0, height: 4},
                             shadowOpacity: 0.3,
                             shadowRadius: 8,

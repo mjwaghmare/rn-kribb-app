@@ -1,4 +1,4 @@
-import {View, Text, ActivityIndicator, FlatList} from 'react-native'
+import {ActivityIndicator, FlatList, Text, View} from 'react-native'
 import React, {useCallback, useState} from 'react'
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useSupabase} from "@/hooks/useSupabase";
@@ -7,6 +7,7 @@ import {useFocusEffect} from "expo-router";
 import {Property} from "@/types";
 import PropertyCard from "@/components/PropertyCard";
 import {Ionicons} from "@expo/vector-icons";
+import {useThemeColors} from "@/hooks/useTheme";
 
 interface SavedProperty extends Property {
     id: string;
@@ -18,6 +19,7 @@ export default function SavedScreen() {
 
     const {userId} = useAuth();
     const authSupabase = useSupabase();
+    const colors = useThemeColors();
 
     //states
     const [saved, setSaved] = useState<SavedProperty[]>([]);
@@ -49,15 +51,17 @@ export default function SavedScreen() {
 
 
     return (
-        <SafeAreaView className='flex-1 bg-gray-50 px-8 py-4'>
+        <SafeAreaView style={{backgroundColor: colors.background}} className='flex-1 px-8 py-4'>
             <View className='pb-3 '>
                 <Text
-                    className='text-2xl font-bold text-gray-900'>
+                    className='text-2xl font-bold'
+                    style={{color: colors.text}}
+                >
                     Saved
                 </Text>
                 {
                     !loading && (
-                        <Text className='text-sm text-gray-400 mt-1'>
+                        <Text className='text-sm mt-1' style={{color: colors.textSecondary}}>
                             {saved.length} {saved.length === 1 ? 'property' : 'properties'}
                         </Text>
                     )
@@ -67,7 +71,7 @@ export default function SavedScreen() {
             {
                 loading ?
                     <View className='flex-1 items-center justify-center'>
-                        <ActivityIndicator size='large' color='#2563EB'/>
+                        <ActivityIndicator size='large' color={colors.primary}/>
                     </View>
                     : (
                         <FlatList
@@ -86,11 +90,14 @@ export default function SavedScreen() {
                             )}
                             ListEmptyComponent={
                                 <View className='flex-1 items-center justify-center py-24'>
-                                    <View className='w-20 h-20 bg-red-50 rounded-full items-center justify-center mb-4'>
-                                        <Ionicons name="heart-outline" size={36} color="#EF4444"/>
+                                    <View className='w-20 h-20 rounded-full items-center justify-center mb-4'
+                                          style={{backgroundColor: colors.card}}>
+                                        <Ionicons name="heart-outline" size={36} color={colors.error}/>
                                     </View>
-                                    <Text className='text-gray-700 text-lg font-bold mb-1 mt-2'>No saved properties</Text>
-                                    <Text className='text-gray-400 text-sm text-center mt-0.5'>Tap on the heart icon to
+                                    <Text className='text-lg font-bold mb-1 mt-2' style={{color: colors.text}}>No saved
+                                        properties</Text>
+                                    <Text className='text-sm text-center mt-0.5' style={{color: colors.textSecondary}}>Tap
+                                        on the heart icon to
                                         save a property</Text>
                                 </View>
                             }
