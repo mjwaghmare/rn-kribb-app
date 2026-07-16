@@ -1,9 +1,9 @@
-import { useSupabase } from "@/hooks/useSupabase";
-import { Ionicons } from "@expo/vector-icons";
+import {useSupabase} from "@/hooks/useSupabase";
+import {Ionicons} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import {useRouter} from "expo-router";
+import {useState} from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -16,7 +16,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const TYPES = ["apartment", "house", "villa", "studio"] as const;
 type PropertyType = (typeof TYPES)[number];
@@ -75,7 +75,7 @@ export default function CreatePropertyScreen() {
     const [detectingLocation, setDetectingLocation] = useState(false);
 
     const updateForm = (fields: Partial<FormState>) =>
-        setForm((prev) => ({ ...prev, ...fields }));
+        setForm((prev) => ({...prev, ...fields}));
 
     // ─── Image Picker ──────────────────────────────────────────
     const handlePickImages = async () => {
@@ -112,7 +112,7 @@ export default function CreatePropertyScreen() {
                 const base64 = asset.base64!;
                 const buffer = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
 
-                const { error } = await authSupabase.storage
+                const {error} = await authSupabase.storage
                     .from("property-images")
                     .upload(filename, buffer, {
                         contentType: "image/jpeg",
@@ -121,7 +121,7 @@ export default function CreatePropertyScreen() {
 
                 if (error) throw error;
 
-                const { data: urlData } = authSupabase.storage
+                const {data: urlData} = authSupabase.storage
                     .from("property-images")
                     .getPublicUrl(filename);
 
@@ -151,7 +151,7 @@ export default function CreatePropertyScreen() {
     const handleDetectLocation = async () => {
         setDetectingLocation(true);
         try {
-            const { status } = await Location.requestForegroundPermissionsAsync();
+            const {status} = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
                 Alert.alert(
                     "Permission Denied",
@@ -201,7 +201,7 @@ export default function CreatePropertyScreen() {
 
         setSubmitting(true);
 
-        const { error } = await authSupabase.from("properties").insert({
+        const {error} = await authSupabase.from("properties").insert({
             title: form.title.trim(),
             description: form.description.trim(),
             price: priceNum,
@@ -228,7 +228,7 @@ export default function CreatePropertyScreen() {
 
         setForm(INITIAL_FORM);
         Alert.alert("Success! 🎉", "Property listed successfully.", [
-            { text: "OK", onPress: () => router.replace("/(root)/(tabs)") },
+            {text: "OK", onPress: () => router.replace("/(root)/(tabs)")},
         ]);
     };
 
@@ -249,7 +249,7 @@ export default function CreatePropertyScreen() {
                     onPress={() => onChange(Math.max(1, value - 1))}
                     className="w-11 h-11 items-center justify-center"
                 >
-                    <Ionicons name="remove" size={18} color="#374151" />
+                    <Ionicons name="remove" size={18} color="#374151"/>
                 </TouchableOpacity>
                 <Text className="flex-1 text-center text-gray-800 font-bold text-base">
                     {value}
@@ -258,7 +258,7 @@ export default function CreatePropertyScreen() {
                     onPress={() => onChange(value + 1)}
                     className="w-11 h-11 items-center justify-center"
                 >
-                    <Ionicons name="add" size={18} color="#374151" />
+                    <Ionicons name="add" size={18} color="#374151"/>
                 </TouchableOpacity>
             </View>
         </View>
@@ -298,7 +298,7 @@ export default function CreatePropertyScreen() {
                     value ? "bg-blue-600 border-blue-600" : "border-gray-300"
                 }`}
             >
-                {value && <Ionicons name="checkmark" size={14} color="white" />}
+                {value && <Ionicons name="checkmark" size={14} color="white"/>}
             </View>
         </TouchableOpacity>
     );
@@ -317,7 +317,7 @@ export default function CreatePropertyScreen() {
                 </View>
 
                 <ScrollView
-                    contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
+                    contentContainerStyle={{padding: 20, paddingBottom: 120}}
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
@@ -332,7 +332,7 @@ export default function CreatePropertyScreen() {
                             {form.localImages.map((uri, index) => (
                                 <View key={index} className="relative">
                                     <Image
-                                        source={{ uri }}
+                                        source={{uri}}
                                         className="w-24 h-24 rounded-2xl"
                                         resizeMode="cover"
                                     />
@@ -347,7 +347,7 @@ export default function CreatePropertyScreen() {
                                         onPress={() => handleRemoveImage(index)}
                                         className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full items-center justify-center"
                                     >
-                                        <Ionicons name="close" size={11} color="white" />
+                                        <Ionicons name="close" size={11} color="white"/>
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -359,7 +359,7 @@ export default function CreatePropertyScreen() {
                                     className="w-24 h-24 rounded-2xl bg-white border-2 border-dashed border-gray-300 items-center justify-center"
                                 >
                                     {uploadingImages ? (
-                                        <ActivityIndicator size="small" color="#2563EB" />
+                                        <ActivityIndicator size="small" color="#2563EB"/>
                                     ) : (
                                         <>
                                             <Ionicons
@@ -383,7 +383,7 @@ export default function CreatePropertyScreen() {
                             placeholder="e.g. Modern 3BHK in Bandra"
                             placeholderTextColor="#9CA3AF"
                             value={form.title}
-                            onChangeText={(v) => updateForm({ title: v })}
+                            onChangeText={(v) => updateForm({title: v})}
                         />
                     </View>
 
@@ -394,7 +394,7 @@ export default function CreatePropertyScreen() {
                             placeholder="Describe the property..."
                             placeholderTextColor="#9CA3AF"
                             value={form.description}
-                            onChangeText={(v) => updateForm({ description: v })}
+                            onChangeText={(v) => updateForm({description: v})}
                             multiline
                             textAlignVertical="top"
                         />
@@ -408,7 +408,7 @@ export default function CreatePropertyScreen() {
                             placeholder="e.g. 5000000"
                             placeholderTextColor="#9CA3AF"
                             value={form.price}
-                            onChangeText={(v) => updateForm({ price: v })}
+                            onChangeText={(v) => updateForm({price: v})}
                             keyboardType="numeric"
                         />
                         <Text className="text-xs text-gray-400 mt-1.5 ml-1">
@@ -423,7 +423,7 @@ export default function CreatePropertyScreen() {
                             {TYPES.map((t) => (
                                 <TouchableOpacity
                                     key={t}
-                                    onPress={() => updateForm({ type: t })}
+                                    onPress={() => updateForm({type: t})}
                                     className={`px-4 py-2 rounded-full border ${
                                         form.type === t
                                             ? "bg-blue-600 border-blue-600"
@@ -447,12 +447,12 @@ export default function CreatePropertyScreen() {
                         <Counter
                             label="Bedrooms"
                             value={form.bedrooms}
-                            onChange={(v) => updateForm({ bedrooms: v })}
+                            onChange={(v) => updateForm({bedrooms: v})}
                         />
                         <Counter
                             label="Bathrooms"
                             value={form.bathrooms}
-                            onChange={(v) => updateForm({ bathrooms: v })}
+                            onChange={(v) => updateForm({bathrooms: v})}
                         />
                     </View>
 
@@ -463,7 +463,7 @@ export default function CreatePropertyScreen() {
                             placeholder="e.g. 1200"
                             placeholderTextColor="#9CA3AF"
                             value={form.areaSqft}
-                            onChangeText={(v) => updateForm({ areaSqft: v })}
+                            onChangeText={(v) => updateForm({areaSqft: v})}
                             keyboardType="numeric"
                         />
                     </View>
@@ -476,7 +476,7 @@ export default function CreatePropertyScreen() {
                             placeholder="Street address"
                             placeholderTextColor="#9CA3AF"
                             value={form.address}
-                            onChangeText={(v) => updateForm({ address: v })}
+                            onChangeText={(v) => updateForm({address: v})}
                         />
                     </View>
 
@@ -487,7 +487,7 @@ export default function CreatePropertyScreen() {
                             placeholder="e.g. Mumbai"
                             placeholderTextColor="#9CA3AF"
                             value={form.city}
-                            onChangeText={(v) => updateForm({ city: v })}
+                            onChangeText={(v) => updateForm({city: v})}
                         />
                     </View>
 
@@ -501,9 +501,9 @@ export default function CreatePropertyScreen() {
                                 className="flex-row items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full"
                             >
                                 {detectingLocation ? (
-                                    <ActivityIndicator size="small" color="#2563EB" />
+                                    <ActivityIndicator size="small" color="#2563EB"/>
                                 ) : (
-                                    <Ionicons name="locate-outline" size={13} color="#2563EB" />
+                                    <Ionicons name="locate-outline" size={13} color="#2563EB"/>
                                 )}
                                 <Text className="text-blue-600 text-xs font-semibold">
                                     {detectingLocation ? "Detecting..." : "Detect Location"}
@@ -518,7 +518,7 @@ export default function CreatePropertyScreen() {
                                     placeholder="Latitude"
                                     placeholderTextColor="#9CA3AF"
                                     value={form.latitude}
-                                    onChangeText={(v) => updateForm({ latitude: v })}
+                                    onChangeText={(v) => updateForm({latitude: v})}
                                     keyboardType="numeric"
                                 />
                             </View>
@@ -528,7 +528,7 @@ export default function CreatePropertyScreen() {
                                     placeholder="Longitude"
                                     placeholderTextColor="#9CA3AF"
                                     value={form.longitude}
-                                    onChangeText={(v) => updateForm({ longitude: v })}
+                                    onChangeText={(v) => updateForm({longitude: v})}
                                     keyboardType="numeric"
                                 />
                             </View>
@@ -541,7 +541,7 @@ export default function CreatePropertyScreen() {
                             label="Featured Property"
                             description="Show this in the Featured section on home"
                             value={form.isFeatured}
-                            onChange={(v) => updateForm({ isFeatured: v })}
+                            onChange={(v) => updateForm({isFeatured: v})}
                         />
                     </View>
 
@@ -552,7 +552,7 @@ export default function CreatePropertyScreen() {
                         className="bg-blue-600 rounded-2xl py-4 items-center"
                         style={{
                             shadowColor: "#2563EB",
-                            shadowOffset: { width: 0, height: 4 },
+                            shadowOffset: {width: 0, height: 4},
                             shadowOpacity: 0.3,
                             shadowRadius: 8,
                             elevation: 4,
@@ -560,7 +560,7 @@ export default function CreatePropertyScreen() {
                         }}
                     >
                         {submitting ? (
-                            <ActivityIndicator color="white" />
+                            <ActivityIndicator color="white"/>
                         ) : (
                             <Text className="text-white font-bold text-base">
                                 List Property

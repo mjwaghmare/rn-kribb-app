@@ -15,12 +15,11 @@ export default function MapScreen() {
 
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
+    const hasValidCoords = !isNaN(lat) && !isNaN(lng) && lat && lng;
 
-    const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${
-        lng - 0.001
-    }%2C${lat - 0.001}%2C${lng + 0.001}%2C${
-        lat + 0.001
-    }&layer=mapnik&marker=${lat}%2C${lng}`;
+    const mapUrl = hasValidCoords 
+        ? `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`
+        : `https://www.openstreetmap.org/search?query=${encodeURIComponent(address || '')}`;
 
     return (
         <SafeAreaView className="flex-1 bg-white">

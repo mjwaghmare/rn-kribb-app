@@ -118,11 +118,11 @@ export default function PropertyDetailScreen() {
         );
     }
 
-    const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${
-        property.longitude - 0.003
-    }%2C${property.latitude - 0.003}%2C${property.longitude + 0.003}%2C${
-        property.latitude + 0.003
-    }&layer=mapnik&marker=${property.latitude}%2C${property.longitude}`;
+    const hasValidCoords = property.latitude && property.longitude && 
+        !isNaN(property.latitude) && !isNaN(property.longitude);
+    const mapUrl = hasValidCoords 
+        ? `https://www.openstreetmap.org/?mlat=${property.latitude}&mlon=${property.longitude}#map=16/${property.latitude}/${property.longitude}`
+        : `https://www.openstreetmap.org/search?query=${encodeURIComponent(property.address + ', ' + property.city)}`;
 
     const isLongDesc = (property.description?.length ?? 0) > 150;
     const displayDesc =
